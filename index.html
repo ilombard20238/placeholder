@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookr Careers</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 40px auto;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+    .eyebrow {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 36px;
+    }
+
+    .subtitle {
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      font-size: 15px;
+      background: white;
+    }
+
+    textarea {
+      min-height: 260px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #0f172a;
+      color: white;
+    }
+
+    .secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: #ecfdf5;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status.error {
+      display: block;
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        margin: 20px;
+        padding: 22px;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="eyebrow">Bookr Careers</div>
+    <h1>Apply for Data Analyst</h1>
+    <p class="subtitle">
+      Submit your application below. For this version of the system, resumes are pasted as text instead of uploaded as PDFs.
+      This keeps processing simple, reliable, and demo-friendly.
+    </p>
+
+    <form id="applicationForm">
+      <div class="row">
+        <div class="field">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="text" id="phone" name="phone" />
+        </div>
+
+        <div class="field">
+          <label for="job">Role</label>
+          <select id="job" name="job">
+            <option value="Data Analyst">Data Analyst</option>
+            <option value="Data Analyst Intern">Data Analyst Intern</option>
+            <option value="GIS Intern">GIS Intern</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="resume">Paste Resume Text</label>
+        <textarea id="resume" name="resume" required></textarea>
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="secondary" id="sampleBtn">Use Sample Resume</button>
+        <button type="submit" class="primary" id="submitBtn">Submit Application</button>
+      </div>
+    </form>
+
+    <div id="statusMessage" class="status"></div>
+
+    <div class="footer-note">
+      Demo note: click <strong>Execute Workflow</strong> in n8n first, then submit the form right away.
+    </div>
+  </div>
+
+  <script>
+    const webhookUrl = "https://lemohead123.app.n8n.cloud/webhook-test/915d9a43-6293-456a-8df2-0cfa22792630";
+
+    const sampleResume = `Emily Johnson
+Email: emily.johnson@email.com
+Phone: 561-555-0199
+
+Professional Summary:
+Detail-oriented Data Analyst with 3+ years of experience in business intelligence, reporting, and data visualization.
+
+Skills:
+Python, SQL, Excel, Power BI, Data Visualization, Statistics
+
+Experience:
+Data Analyst - ABC Analytics (2021-2024)
+- Built automated dashboards in Power BI
+- Analyzed large datasets using SQL and Python
+- Improved reporting efficiency by 35%
+
+Education:
+B.S. in Data Science - University of Florida (2019)
+
+Certifications:
+Google Data Analytics Professional Certificate`;
+
+    const form = document.getElementById("applicationForm");
+    const sampleBtn = document.getElementById("sampleBtn");
+    const statusMessage = document.getElementById("statusMessage");
+    const submitBtn = document.getElementById("submitBtn");
+
+    sampleBtn.addEventListener("click", function () {
+      document.getElementById("name").value = "Emily Johnson";
+      document.getElementById("email").value = "emily.johnson@email.com";
+      document.getElementById("phone").value = "561-555-0199";
+      document.getElementById("job").value = "Data Analyst";
+      document.getElementById("resume").value = sampleResume;
+      setStatus("Sample resume loaded.", "success");
+    });
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+      setStatus("Submitting application...", "success");
+
+      const payload = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        job: document.getElementById("job").value,
+        resume_text: document.getElementById("resume").value.trim()
+      };
+
+      try {
+        await fetch(webhookUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        setStatus("Application submitted. Check n8n executions to confirm receipt.", "success");
+        form.reset();
+      } catch (error) {
+        setStatus("There was a problem submitting the application. Make sure n8n is in Execute Workflow mode, then try again.", "error");
+        console.error(error);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Application";
+      }
+    });
+
+    function setStatus(message, type) {
+      statusMessage.textContent = message;
+      statusMessage.className = "status " + type;
+    }
+  </script>
+</body>
+</html>
